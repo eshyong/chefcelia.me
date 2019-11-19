@@ -38,5 +38,7 @@ services:
       WORDPRESS_DB_USER: wordpress
       WORDPRESS_DB_PASSWORD: wordpress
       WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - ./plugins:/var/www/html/wp-content/plugins
 volumes:
     db_data: {}
