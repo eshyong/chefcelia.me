@@ -43,7 +43,7 @@ function deactivate_likes_plugin() {
 function add_like_button($content) {
     global $wpdb;
     $post_id = get_post()->ID;
-    $like_button = "<form action='wp-json/likes/v1/posts/$post_id' method='POST'>" .
+    $like_button = "<form action='/wp-json/likes/v1/posts/$post_id' method='POST'>" .
                    "<input type='submit' value='LIKE' class='like-button'></input>" .
                    "</form>";
     $table_name = $wpdb->prefix . "likes";
@@ -92,7 +92,7 @@ function handle_like_for_post($request) {
         if (!$result) {
             return new WP_Error(
                 "server_error",
-                "Unable to like post",
+                "Unable to like post: " . $wpdb->last_error,
                 array("status" => 500),
             );
         }
@@ -108,9 +108,11 @@ function set_user_id_cookie() {
         array(
             'expires' => time() + $ten_years_in_seconds,
             'path' => '/',
-            'domain' => '.www.chefcelia.me',
+            'domain' => 'www.chefcelia.me',
             'secure' => true,
             'httponly' => true,
         )
     );
+
+    return $uuid;
 }
