@@ -3,6 +3,14 @@
  * Plugin Name: Likes
  */
 
+define("ENVIRONMENT", getenv("ENVIRONMENT"));
+
+if (ENVIRONMENT === "production") {
+    define("DOMAIN", "www.chefcelia.me");
+} else {
+    define("DOMAIN", "localhost");
+}
+
 register_activation_hook(__FILE__, 'activate_likes_plugin');
 register_deactivation_hook(__FILE__, 'deactivate_likes_plugin');
 
@@ -102,14 +110,20 @@ function handle_like_for_post($request) {
 function set_user_id_cookie() {
     $uuid = wp_generate_uuid4();
     $ten_years_in_seconds = 60 * 60 * 24 * 365 * 10;
+    if (ENVIRONMENT === 'production') {
+        $secure = true;
+    } else {
+        $secure = false;
+    }
+
     setcookie(
         'user_id',
         $uuid,
         array(
             'expires' => time() + $ten_years_in_seconds,
             'path' => '/',
-            'domain' => 'www.chefcelia.me',
-            'secure' => true,
+            'domain' => DOMAIN,
+            'secure' => $secure,
             'httponly' => true,
         )
     );
