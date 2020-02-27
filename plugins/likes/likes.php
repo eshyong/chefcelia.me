@@ -14,7 +14,7 @@ if (ENVIRONMENT === "production") {
 register_activation_hook(__FILE__, "activate_likes_plugin");
 register_uninstall_hook(__FILE__, "uninstall_likes_plugin");
 
-add_action("the_content", "add_like_button");
+add_filter("the_content", "add_like_button");
 add_action("rest_api_init", function() {
     register_rest_route("likes/v1/", "/posts/(?P<post_id>\d+)", array(
         "methods" => "POST",
@@ -39,7 +39,7 @@ function activate_likes_plugin() {
         CONSTRAINT post_id_fk
             FOREIGN KEY (post_id)
             REFERENCES wp_posts (id)
-    ) $charset_collate;";
+    ) $charset_collate";
 
     require_once(ABSPATH . "wp-admin/includes/upgrade.php");
     dbDelta($sql);
@@ -48,18 +48,21 @@ function activate_likes_plugin() {
 function uninstall_likes_plugin() {
     global $wpdb;
     $table_name = $wpdb->prefix . "likes";
-    $sql = "DROP TABLE IF EXISTS $table_name;";
+    $sql = "DROP TABLE IF EXISTS $table_name";
     $wpdb->query($sql);
 }
 
 function add_like_button($content) {
+    if (is_admin()) {
+        return $content;
+    }
     $post_id = get_post()->ID;
     $like_button = "<form>" .
-                   "<input type="submit" value="LIKE" class="like-button" onclick="likePost(event, $post_id);"></input>" .
+                   "<input type='submit' value='LIKE' class='like-button' onclick='likePost(event, $post_id);'></input>" .
                    "</form><br>";
     $num_likes = get_likes_for_post($post_id);
 
-    $like_count = "<p id="post-$post_id-likes" class="like-count">";
+    $like_count = "<p id='post-$post_id-likes' class='like-count'>";
     if ($num_likes === 1) {
         $like_count .= "1 user liked this post";
     } else if ($num_likes > 1  || $num_likes === 0) {
@@ -68,7 +71,7 @@ function add_like_button($content) {
     $like_count .= "</p>";
 
     $like_element = "<div>" . $like_button . $like_count . "</div>";
-    echo $content . $like_element;
+    return $content . $like_element;
 }
 
 function get_likes_for_post($post_id, $user_id = null) {
