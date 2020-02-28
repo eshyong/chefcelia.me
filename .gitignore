@@ -1,1 +1,6 @@
 data/certbot/
+
+# wordpress garbage
+plugins/akismet
+plugins/hello.php
+plugins/index.php
