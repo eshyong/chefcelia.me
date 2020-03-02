@@ -1,0 +1,8 @@
+input[type="submit"].like-button {
+	background-color: #d96514;
+}
+
+p.like-count {
+	color: #888888;
+}
+

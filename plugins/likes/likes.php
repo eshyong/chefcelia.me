@@ -24,6 +24,7 @@ add_action("rest_api_init", function() {
 
 add_action("wp_enqueue_scripts", function() {
     wp_enqueue_script("likes_js", plugins_url("js/likes.js", __FILE__), array("jquery"));
+    wp_enqueue_style("likes_css", plugins_url("css/likes.css", __FILE__), array());
 });
 
 function activate_likes_plugin() {
@@ -31,7 +32,7 @@ function activate_likes_plugin() {
     $charset_collate = $wpdb->get_charset_collate();
     $table_name = $wpdb->prefix . "likes";
 
-    $sql = "CREATE TABLE $table_name (
+    $sql = "CREATE TABLE IF NOT EXISTS $table_name (
         id SERIAL PRIMARY KEY,
         user_id VARCHAR(36) NOT NULL,
         post_id BIGINT UNSIGNED NOT NULL,
