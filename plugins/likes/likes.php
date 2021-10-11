@@ -64,9 +64,11 @@ function add_like_button($content) {
     $num_likes = get_likes_for_post($post_id);
 
     $like_count = "<p id='post-$post_id-likes' class='like-count'>";
-    if ($num_likes === 1) {
+    if ($num_likes === 0) {
+        $like_count = "";
+    } else if ($num_likes === 1) {
         $like_count .= "1 user liked this post";
-    } else if ($num_likes > 1  || $num_likes === 0) {
+    } else {
         $like_count .= "$num_likes users liked this post";
     }
     $like_count .= "</p>";
